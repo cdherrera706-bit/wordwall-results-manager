@@ -102,7 +102,7 @@ if uploads:
         selected = st.selectbox('Ver grupo', groups)
         def group_table(group):
             sub = scores[scores['Grupo'] == group]
-            pivot = sub.pivot(index='_key', columns='Actividad', values='Calificación').reindex(columns=all_activities)
+            pivot = sub.pivot_tablet(index='_key', columns='Actividad', values='Calificación', aggfunc='mean').reindex(columns=all_activities)
             names = sub.groupby('_key', sort=False)['Alumno'].first()
             pivot.insert(0, 'Alumno', names.reindex(pivot.index))
             cols = [x for x in pivot.columns if x != 'Alumno']
