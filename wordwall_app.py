@@ -101,15 +101,15 @@ if uploads:
         groups = sorted(raw['Grupo'].unique(), key=lambda x:(not x.isdigit(), int(x) if x.isdigit() else x))
         selected = st.selectbox('Ver grupo', groups)
         def group_table(group):
-             sub = scores[scores['Grupo']==group]
+            sub = scores[scores['Grupo'] == group]
             pivot = sub.pivot(index='_key', columns='Actividad', values='Calificación').reindex(columns=all_activities)
-            names = sub.groupby('_key',sort=False)['Alumno'].first()
+            names = sub.groupby('_key', sort=False)['Alumno'].first()
             pivot.insert(0, 'Alumno', names.reindex(pivot.index))
-            cols = [x for x in pivot.columns if x!='Alumno']
+            cols = [x for x in pivot.columns if x != 'Alumno']
             pivot['Actividades realizadas'] = pivot[cols].notna().sum(axis=1)
             pivot[cols] = pivot[cols].fillna(0)
             pivot['Promedio mensual'] = pivot[cols].mean(axis=1).round(2)
-            return pivot.reset_index(drop=True).sort_values('Alumno',key=lambda s:s.map(normalize_name))
+            return pivot.reset_index(drop=True).sort_values('Alumno', key=lambda s: s.map(normalize_name))
         st.dataframe(group_table(selected), hide_index=True, use_container_width=True)
         with st.expander('Historial de intentos'):
             st.dataframe(raw.drop(columns=['_key']), hide_index=True, use_container_width=True)
